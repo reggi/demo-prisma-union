@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model City {
+  id           Int       @default(autoincrement()) @id
+  name         String    @unique
+  places       Place[]
+  country      Country   @relation(fields: [countryId], references: [id])
+  countryId    Int
+}
+
+model Country {
+  id           Int       @default(autoincrement()) @id
+  name         String    @unique
+  places       Place[]
+  cities       City[]
+}
+
+model Place {
+  id           Int       @default(autoincrement()) @id
+  city         City?     @relation(fields: [cityId], references: [id])
+  cityId       Int?
+  country      Country?  @relation(fields: [countryId], references: [id])
+  countryId    Int?
+}
